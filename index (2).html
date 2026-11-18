@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>موعد زيارة بوث</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<h1>موعد زيارة بوث</h1>
+<p class="s">المعرض: السبت 12/12/2026 — بتوقيت عمّان، من 10:30 صباحًا إلى 5:30 مساءً. اختر البوث ثم الوقت المناسب.</p>
+<div id="done"></div>
+<div class="tabs" id="tabs"></div>
+<div id="status" class="msg">جارٍ التحميل…</div>
+<div class="grid" id="grid"></div>
+</main>
+<dialog id="dlg">
+<div id="dt" style="font-weight:600"></div>
+<label for="nm">الاسم</label><input id="nm" autocomplete="name">
+<label for="ph">رقم الهاتف</label><input id="ph" type="tel" inputmode="tel" autocomplete="tel" dir="ltr">
+<div id="de" class="msg err"></div>
+<div class="row"><button id="cx" type="button">إلغاء</button><button id="ok" type="button" class="go">تأكيد الحجز</button></div>
+</dialog>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

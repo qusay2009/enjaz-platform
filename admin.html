@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>لوحة الإدارة</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<h1>لوحة الإدارة — الحجوزات</h1>
+<p class="s">12/12/2026 — المعلومات هنا خاصة بالمسؤول فقط.</p>
+<div id="login"><label for="pw">كلمة السر</label><input id="pw" type="password" autocomplete="current-password"><div class="row"><button class="go" id="go" type="button">دخول</button></div></div>
+<div id="msg" class="msg err"></div>
+<section class="adm" id="adm" hidden style="margin-top:8px">
+<div class="row" style="margin-top:0"><button id="rf" type="button">تحديث</button><button id="ex" type="button">تنزيل CSV</button></div>
+<p class="s" id="cnt" style="margin-top:8px"></p>
+<div class="sc"><table><thead><tr><th>الموعد</th><th>الاسم</th><th>الهاتف</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+</section>
+</main>
+<script src="config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

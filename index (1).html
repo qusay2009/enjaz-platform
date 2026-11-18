@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>موعد زيارة بوث</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f7f9;--card:#fff;--tx:#1c2430;--mut:#6b7686;--ac:#0f6e56;--act:#fff;--bd:#dde2e8;--tk:#eceef1;--br:#fff4d6;--brt:#7a5b00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181d;--card:#1d232b;--tx:#e8ecf1;--mut:#9aa6b5;--ac:#3cc29a;--act:#06251c;--bd:#2f3844;--tk:#262d37;--br:#3a3115;--brt:#f0d98a}}
+:root[data-theme="dark"]{--bg:#14181d;--card:#1d232b;--tx:#e8ecf1;--mut:#9aa6b5;--ac:#3cc29a;--act:#06251c;--bd:#2f3844;--tk:#262d37;--br:#3a3115;--brt:#f0d98a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;line-height:1.6}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:8px 0 4px}p.s{color:var(--mut);margin:0 0 16px;font-size:14px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.tabs button{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 12px;border-radius:999px;font:inherit;font-size:14px;cursor:pointer}
+.tabs button.on{background:var(--ac);color:var(--act);border-color:var(--ac)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.slot{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;padding:12px 8px;font:inherit;cursor:pointer;direction:ltr;text-align:center}
+.slot:hover:not(:disabled){border-color:var(--ac)}
+.slot:disabled{background:var(--tk);color:var(--mut);cursor:not-allowed;text-decoration:line-through}
+.brk{grid-column:1/-1;background:var(--br);color:var(--brt);border-radius:10px;padding:10px;text-align:center;font-size:14px}
+dialog{border:1px solid var(--bd);border-radius:14px;background:var(--card);color:var(--tx);width:min(92vw,380px);padding:20px}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+label{display:block;font-size:14px;margin:12px 0 4px}
+input{width:100%;box-sizing:border-box;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+.row{display:flex;gap:8px;margin-top:16px}.row button{flex:1;padding:10px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;cursor:pointer}
+.row .go{background:var(--ac);color:var(--act);border-color:var(--ac)}
+.msg{margin:12px 0;font-size:14px;color:var(--mut)}.err{color:#c0392b}
+.ok{background:var(--card);border:1px solid var(--ac);border-radius:12px;padding:14px;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:6px;border-bottom:1px solid var(--bd);text-align:right}
+.adm{margin-top:28px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}.adm h2{font-size:16px;margin:0 0 8px}
+.sc{overflow-x:auto}.x{background:none;border:0;color:#c0392b;cursor:pointer;font:inherit}
+</style>
+</head>
+<body>
+<main>
+<h1>موعد زيارة بوث</h1>
+<p class="s">المعرض: السبت 12/12/2026 — بتوقيت عمّان، من 10:30 صباحًا إلى 5:30 مساءً. اختر البوث ثم الوقت المناسب.</p>
+<div id="done"></div>
+<div class="tabs" id="tabs"></div>
+<div id="status" class="msg">جارٍ التحميل…</div>
+<div class="grid" id="grid"></div>
+</main>
+<dialog id="dlg">
+<div id="dt" style="font-weight:600"></div>
+<label for="nm">الاسم</label><input id="nm" autocomplete="name">
+<label for="ph">رقم الهاتف</label><input id="ph" type="tel" inputmode="tel" autocomplete="tel" dir="ltr">
+<div id="de" class="msg err"></div>
+<div class="row"><button id="cx" type="button">إلغاء</button><button id="ok" type="button" class="go">تأكيد الحجز</button></div>
+</dialog>
+<script>
+const API="PASTE_APPS_SCRIPT_URL_HERE";
+const BOOTHS=[["b1","م. وسام مرعي"],["b2","د. موسى صالح"],["b3","أ. خضر عباسي"],["b4","أ. أحمد غباري"],["b5","أ. وائل عياد"],["b6","أ. لجين سيوري"],["b7","ASEZA"]];
+const T=["10:30–10:45","10:50–11:05","11:10–11:25","11:30–11:45","11:50–12:05","12:10–12:25","12:30–12:45","12:50–1:05","1:10–1:25","BREAK","1:40–1:55","2:00–2:15","2:20–2:35","2:40–2:55","3:00–3:15","3:20–3:35","3:40–3:55","4:00–4:15","4:20–4:35","4:40–4:55","5:00–5:15"];
+let cur="b1",taken={},ready=false,pick=null;
+const $=id=>document.getElementById(id);
+const bname=id=>BOOTHS.find(b=>b[0]===id)[1];
+const sid=(b,i)=>b+"_s"+i;
+function tabs(){const t=$("tabs");t.textContent="";BOOTHS.forEach(([id,n])=>{const b=document.createElement("button");b.textContent=n;b.className=id===cur?"on":"";b.onclick=()=>{cur=id;tabs();grid()};t.appendChild(b)})}
+function grid(){const g=$("grid");g.textContent="";T.forEach((x,i)=>{if(x==="BREAK"){const d=document.createElement("div");d.className="brk";d.textContent="استراحة للجميع من 1:25 إلى 1:40";g.appendChild(d);return}
+const b=document.createElement("button");b.className="slot";const t=!!taken[sid(cur,i)];b.disabled=t||!ready;b.textContent=x+(t?" — محجوز":"");b.onclick=()=>open(i);g.appendChild(b)})}
+async function load(){try{const r=await fetch(API+"?action=taken");const j=await r.json();taken={};(j.taken||[]).forEach(k=>taken[k]=1);ready=true;$("status").textContent="";grid()}catch(e){$("status").textContent="تعذّر تحميل المواعيد. أعد تحميل الصفحة."}}
+async function open(i){await load();if(taken[sid(cur,i)]){$("status").textContent="هذا الموعد حُجز للتو، اختر وقتًا آخر.";return}pick=i;$("dt").textContent=bname(cur)+" — "+T[i];$("de").textContent="";$("dlg").showModal()}
+$("cx").onclick=()=>$("dlg").close();
+$("ok").onclick=async()=>{
+const n=$("nm").value.trim(),p=$("ph").value.trim(),e=$("de");
+if(n.length<2){e.textContent="الرجاء إدخال الاسم.";return}
+if(!/^[0-9+\s-]{7,16}$/.test(p)){e.textContent="الرجاء إدخال رقم هاتف صحيح.";return}
+const b=cur,i=pick;e.textContent="";$("ok").disabled=true;
+try{
+const r=await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({booth:b,slot:i,name:n,phone:p})});
+const j=await r.json();
+if(!j.ok){e.textContent=j.error==="taken"?"عذرًا، تم حجز هذا الموعد للتو. اختر وقتًا آخر.":"تعذّر إتمام الحجز، حاول مرة أخرى.";await load();return}
+$("dlg").close();$("nm").value="";$("ph").value="";
+const d=$("done");d.className="ok";d.textContent="تم تأكيد حجزك: "+bname(b)+" — "+T[i]+" (12/12/2026، بتوقيت عمّان).";await load();
+}catch(x){e.textContent="تعذّر إتمام الحجز. تحقق من الاتصال وأعد المحاولة."}
+finally{$("ok").disabled=false}};
+tabs();grid();load();setInterval(()=>{if(!document.hidden&&!$("dlg").open)load()},5000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)load()});
+</script>
+</body>
+</html>
